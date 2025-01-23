@@ -22,3 +22,4 @@ battle_c_dep = declare_dependency(
 
 # Provide the dependency
 meson.override_dependency('battle_c', battle_c_dep)
+

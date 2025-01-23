@@ -1,25 +1,31 @@
 #include "battle_c.h"
-
-#include "stdio.h"
-#include "stdlib.h"
+#include "map.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
+    BC_Connection *conn = bc_connect("5.135.136.236", 8080);
+    if (!conn) {
+        printf("Erreur : Impossible de se connecter au serveur\n");
+        return 1;
+    }
 
-  BC_Connection *conn = bc_connect("5.135.136.236", 8080);
+    // Obtenir les dimensions de la carte
+    BC_WorldInfo world_info = bc_get_world_info(conn);
+    int width = world_info.map_x;
+    int height = world_info.map_y;
 
-  bc_get_world_info(conn);
+    // Initialiser la carte
+    CellType map[MAX_X][MAX_Y];
+    init_map(map, width, height);
 
-  bc_set_speed(conn, 1.2, 0.4, 0);
+    // Ping radar et mise à jour de la carte
+    BC_List *list = bc_radar_ping(conn);
+    update_map(map, list);
 
-  BC_PlayerData data = bc_get_player_data(conn);
+    // Afficher la carte
+    print_map(map, width, height);
 
-  BC_List *list = bc_radar_ping(conn);
-
-  do {
-    BC_MapObject *map_object = (BC_MapObject *)bc_ll_value(list);
-    printf("map_object x = %d, y = %d", map_object->position.x,
-           map_object->position.y);
-
-  } while (((list = bc_ll_next(list)) != NULL));
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
+
