@@ -7,14 +7,15 @@ project('battle_c_bot', ['c', 'cpp'],
 battle_c_subproject = subproject('battle_c')
 battle_c_dep = battle_c_subproject.get_variable('battle_c_dep')# Create the executable
 
-executable_sources = ['./src/main.c']
+executable_sources = ['./src/main.c','./src/deplacement.c','./src/tir.c','./src/radar.c']
 
-include_dir = include_directories('include')
+incdir = include_directories('/usr/local/include')
+inc_local = include_directories('./include')
 
 executable(
   'battle_c_bot',
   executable_sources,
-  include_directories: [include_dir],
+  include_directories: [incdir, inc_local],
   dependencies: [battle_c_dep],
  )
 
